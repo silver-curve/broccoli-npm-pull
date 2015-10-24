@@ -59,8 +59,8 @@ NodeImporter.prototype.linkDeps = function(deps, nodeModulesOutPath) {
 		    	this.npmPaths.push(folder);
 		    	var modulePath = path.join(parts[1], folder);
 		    	this.linkNpmModule(modulePath, nodeModulesOutPath);
-				  // recurse
-			    this.linkDeps(dependency.deps);
+				  // no need to recurse as modules are self contained?
+					//    this.linkDeps(dependency.deps, nodeModulesOutPath);
 		    }
 			}
 		}
