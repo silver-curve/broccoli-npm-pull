@@ -20,7 +20,7 @@
     "url": "https://github.com/BryanCrotaz/broccoli-npm-pull/issues"
   },
   "homepage": "https://github.com/BryanCrotaz/broccoli-npm-pull",
-  "devDependencies": {
+  "dependencies": {
     "broccoli-plugin": "^1.2.0",
     "rsvp": "^3.1.0",
     "required": "^1.0.0",
