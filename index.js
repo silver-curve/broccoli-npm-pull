@@ -10,13 +10,13 @@ NodeImporter.prototype = Object.create(Plugin.prototype);
 NodeImporter.prototype.constructor = NodeImporter;
 
 function NodeImporter(inputNodes, options) {
-  options = options || {};
-  Plugin.call(this, inputNodes, {
-    annotation: options.annotation
-  });
-  this.options = options;
-  this.options.ignore = this.options.ignore || [];
-  this.options.mainFile = this.options.mainFile || 'index.js';
+	options = options || {};
+	Plugin.call(this, inputNodes, {
+		annotation: options.annotation
+	});
+	this.options = options;
+	this.options.ignore = this.options.ignore || [];
+	this.options.mainFile = this.options.mainFile || 'index.js';
 }
 
 NodeImporter.prototype.build = function() {
@@ -35,11 +35,11 @@ NodeImporter.prototype.build = function() {
 				reject(err);
 			}
 			else {
-		    self.linkDeps(deps, nodeModulesOutPath);
-		    resolve(null);
-		  }
+				self.linkDeps(deps, nodeModulesOutPath);
+				resolve(null);
+			}
 		});
-  });
+	});
 };
 
 NodeImporter.prototype.linkDeps = function(deps, nodeModulesOutPath) {
@@ -49,19 +49,22 @@ NodeImporter.prototype.linkDeps = function(deps, nodeModulesOutPath) {
 		for (var i = 0; i < len; i++) {
 			var dependency = deps[i];
 			if (!dependency.core && 
-				  !this.options.ignore.contains(dependency.id))
+					!this.options.ignore.contains(dependency.id))
 			{
 				var parts = moduleFolderRegex.exec(dependency.filename);
-				var folder = parts[2];
-		    if (this.npmPaths.indexOf(folder) === -1)
-		    {
-		    	// haven't seen this folder before
-		    	this.npmPaths.push(folder);
-		    	var modulePath = path.join(parts[1], folder);
-		    	this.linkNpmModule(modulePath, nodeModulesOutPath);
-		    }
-	    	// recurse
-				this.linkDeps(dependency.deps, nodeModulesOutPath);
+				if (parts)
+				{
+					var folder = parts[2];
+					if (this.npmPaths.indexOf(folder) === -1)
+					{
+						// haven't seen this folder before
+						this.npmPaths.push(folder);
+						var modulePath = path.join(parts[1], folder);
+						this.linkNpmModule(modulePath, nodeModulesOutPath);
+					}
+					// recurse
+					this.linkDeps(dependency.deps, nodeModulesOutPath);
+				}
 			}
 		}
 	}
