@@ -73,7 +73,15 @@ NodeImporter.prototype.linkDeps = function(deps, nodeModulesOutPath) {
 NodeImporter.prototype.linkNpmModule = function(folder, nodeModulesOutPath) {
 	var module = path.basename(folder);
 	moduleOutPath = path.join(nodeModulesOutPath, module);
-	symlinkOrCopySync(folder, moduleOutPath);
+	try
+	{
+		fs.statSync(moduleOutPath); // throws if path doesn't exist
+	}
+	catch(err)
+	{
+		// fill the hole
+		symlinkOrCopySync(folder, moduleOutPath);
+	}
 }
 
 module.exports = NodeImporter;
