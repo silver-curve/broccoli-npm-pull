@@ -50,6 +50,7 @@ NodeImporter.prototype.linkDeps = function (deps) {
 			var dependency = deps[i];
 			if (!dependency.core && !this.options.ignore.contains(dependency.id))
 			{
+				// if dependency.filename is a folder, use that else, use the folder it is in
 				var folder = fs.statSync(dependency.filename).isDirectory() ? dependency.filename : path.dirname(dependency.filename);
 				if (this.npmPaths.indexOf(folder) === -1)
 				{
