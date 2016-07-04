@@ -43,28 +43,25 @@ NodeImporter.prototype.build = function() {
 };
 
 NodeImporter.prototype.linkDeps = function(deps, nodeModulesOutPath) {
-	const moduleFolderRegex = /(.*\\node_modules\\)([^\\]*)\\.*/;
-	if (deps) {
-		var len = deps.length;
-		for (var i = 0; i < len; i++) {
+	if (deps)
+	{
+		const len = deps.length;
+		for (var i = 0; i < len; i++)
+		{
 			var dependency = deps[i];
-			if (!dependency.core && 
-					!this.options.ignore.contains(dependency.id))
+			if (!dependency.core && !this.options.ignore.contains(dependency.id))
 			{
-				var parts = moduleFolderRegex.exec(dependency.filename);
-				if (parts)
+				console.log("npm pull: linking dependency " + dependency.filename)
+
+				const folder = fs.statSync(dependency.filename).isDirectory() ? dependency.filename : path.dirname(dependency.filename);
+				if (this.npmPaths.indexOf(folder) === -1)
 				{
-					var folder = parts[2];
-					if (this.npmPaths.indexOf(folder) === -1)
-					{
-						// haven't seen this folder before
-						this.npmPaths.push(folder);
-						var modulePath = path.join(parts[1], folder);
-						this.linkNpmModule(modulePath, nodeModulesOutPath);
-					}
-					// recurse
-					this.linkDeps(dependency.deps, nodeModulesOutPath);
+					// haven't seen this folder before
+					this.npmPaths.push(folder);
+					this.linkNpmModule(folder, nodeModulesOutPath);
 				}
+				// recurse
+				this.linkDeps(dependency.deps, nodeModulesOutPath);
 			}
 		}
 	}
