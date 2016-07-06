@@ -5,6 +5,10 @@ var RSVP = require('rsvp');
 var required = require('required');
 var symlinkOrCopySync = require('symlink-or-copy').sync;
 
+function getFolderFromPath (fullPath) {
+	return fs.statSync(fullPath).isDirectory() ? fullPath : path.dirname(fullPath);
+}
+
 // Create a subclass NodeImporter derived from Plugin
 NodeImporter.prototype = Object.create(Plugin.prototype);
 NodeImporter.prototype.constructor = NodeImporter;
@@ -29,15 +33,39 @@ NodeImporter.prototype.build = function () {
 	var self = this;
 
 	return new RSVP.Promise(function(resolve, reject) {
-		required(indexPath, function(err, deps) {
-			if (err) {
-				reject(err);
+		required(indexPath, {
+				resolve: function (id, parent, cb) {
+					// Override required's default resolver to ensure we check nested modules.
+					var resolvedModule = priv_module.Module._resolveLookupPaths(id, parent);
+					var paths = resolvedModule[1];
+
+					// Strip out folders up to the module path we're looking at.
+					var folder = getFolderFromPath(parent.filename);
+
+					while (paths.length)
+					{
+						if (paths[0].indexOf(folder) === 0)
+						{
+							break;
+						}
+
+						paths.shift();
+					}
+
+					var path = priv_module.Module._findPath(id, paths);
+					cb(null, path);
+				}
+			},
+			function (err, deps) {
+				if (err) {
+					reject(err);
+				}
+				else {
+					self.linkDeps(deps);
+					resolve(null);
+				}
 			}
-			else {
-				self.linkDeps(deps);
-				resolve(null);
-			}
-		});
+		);
 	});
 };
 
@@ -51,7 +79,7 @@ NodeImporter.prototype.linkDeps = function (deps) {
 			if (!dependency.core && !this.options.ignore.contains(dependency.id))
 			{
 				// if dependency.filename is a folder, use that else, use the folder it is in
-				var folder = fs.statSync(dependency.filename).isDirectory() ? dependency.filename : path.dirname(dependency.filename);
+				var folder = getFolderFromPath(dependency.filename);
 				if (this.npmPaths.indexOf(folder) === -1)
 				{
 					// haven't seen this folder before
