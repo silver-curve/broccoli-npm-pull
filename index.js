@@ -3,6 +3,7 @@ var path = require('path');
 var fs = require('fs');
 var RSVP = require('rsvp');
 var required = require('required');
+var Module = require('module').Module;
 var symlinkOrCopySync = require('symlink-or-copy').sync;
 
 function getFolderFromPath (fullPath) {
@@ -36,7 +37,7 @@ NodeImporter.prototype.build = function () {
 		required(indexPath, {
 				resolve: function (id, parent, cb) {
 					// Override required's default resolver to ensure we check nested modules.
-					var resolvedModule = priv_module.Module._resolveLookupPaths(id, parent);
+					var resolvedModule = Module._resolveLookupPaths(id, parent);
 					var paths = resolvedModule[1];
 
 					// Strip out folders up to the module path we're looking at.
@@ -52,7 +53,7 @@ NodeImporter.prototype.build = function () {
 						paths.shift();
 					}
 
-					var path = priv_module.Module._findPath(id, paths);
+					var path = Module._findPath(id, paths);
 					cb(null, path);
 				}
 			},
