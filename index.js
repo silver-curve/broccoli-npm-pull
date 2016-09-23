@@ -5,6 +5,7 @@ var RSVP = require('rsvp');
 var required = require('required');
 var Module = require('module').Module;
 var symlinkOrCopySync = require('symlink-or-copy').sync;
+var detective = require('detective');
 
 function getFolderFromPath (fullPath) {
 	return fs.statSync(fullPath).isDirectory() ? fullPath : path.dirname(fullPath);
@@ -55,7 +56,8 @@ NodeImporter.prototype.build = function () {
 
 					var path = Module._findPath(id, paths);
 					cb(null, path);
-				}
+				},
+				detective: detective
 			},
 			function (err, deps) {
 				if (err) {
@@ -80,6 +82,7 @@ NodeImporter.prototype.linkDeps = function (deps) {
 			if (!dependency.core && !this.options.ignore.contains(dependency.id))
 			{
 				// if dependency.filename is a folder, use that else, use the folder it is in
+
 				var folder = getFolderFromPath(dependency.filename);
 				if (this.npmPaths.indexOf(folder) === -1)
 				{
