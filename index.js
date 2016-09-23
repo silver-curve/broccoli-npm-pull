@@ -44,6 +44,12 @@ NodeImporter.prototype.build = function () {
 					// Strip out folders up to the module path we're looking at.
 					var folder = getFolderFromPath(parent.filename);
 
+					if (this.filename == "C:\\Projects\\sc-pp\\sc-pp-backend\\node_modules\\request\\request.js") {
+						console.log("found paths: ");
+						console.log({paths});
+						console.log("looking for folder: " + folder);
+					}
+
 					while (paths.length)
 					{
 						if (paths[0].indexOf(folder) === 0)
@@ -55,7 +61,14 @@ NodeImporter.prototype.build = function () {
 					}
 
 					var path = Module._findPath(id, paths);
-					cb(null, path);
+
+					if (this.filename == "C:\\Projects\\sc-pp\\sc-pp-backend\\node_modules\\request\\request.js") {
+						console.log("shifted paths: ");
+						console.log({shiftedPaths: paths});
+						console.log("found path: " + path);
+					}
+
+					cb(null, path);				
 				},
 				detective: detective
 			},
