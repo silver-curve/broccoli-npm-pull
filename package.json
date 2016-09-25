@@ -1,6 +1,6 @@
 {
   "name": "broccoli-npm-pull",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "Puts a node_modules folder in your dist output with only the modules you've used",
   "main": "index.js",
   "scripts": {
@@ -22,9 +22,8 @@
   "homepage": "https://github.com/BryanCrotaz/broccoli-npm-pull",
   "dependencies": {
     "broccoli-plugin": "^1.2.0",
-    "required": "^1.0.0",
+    "require-traverser": "^0.1.8",
     "rsvp": "^3.1.0",
-    "symlink-or-copy": "^1.0.1",
-    "detective": "git@github.com:substack/node-detective.git"
+    "symlink-or-copy": "^1.0.1"
   }
 }
