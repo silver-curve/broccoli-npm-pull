@@ -1,15 +1,12 @@
 {
-  "name": "broccoli-npm-pull",
+  "name": "@silvercurve/broccoli-npm-pull",
   "version": "1.0.6",
   "description": "Puts a node_modules folder in your dist output with only the modules you've used",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/BryanCrotaz/broccoli-npm-pull.git"
-  },
+  "repository": "https://registry.npmjs.org",
   "keywords": [
     "broccoli-plugin",
     "npm"
@@ -17,13 +14,16 @@
   "author": "Bryan Crotaz <bgcrotaz@hotmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/BryanCrotaz/broccoli-npm-pull/issues"
+    "url": "https://github.com/silver-curve/broccoli-npm-pull/issues"
   },
-  "homepage": "https://github.com/BryanCrotaz/broccoli-npm-pull",
+  "homepage": "https://github.com/silver-curve/broccoli-npm-pull",
   "dependencies": {
     "broccoli-plugin": "^1.2.0",
     "require-traverser": "^0.1.8",
     "rsvp": "^3.1.0",
     "symlink-or-copy": "^1.0.1"
+  },
+  "resolutions": {
+    "graceful-fs": "^4.2.0"
   }
 }

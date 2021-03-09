@@ -1,0 +1,53 @@
+name: publish_package
+on: 
+  release:
+    types: [ released ]
+
+env:
+  CI: true
+  BROCCOLI_ENV: test
+    
+jobs:
+  publish_package:
+    runs-on: ubuntu-latest
+    env:
+      NPM_AUTH_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+    steps:
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '9.x'
+        always-auth: true
+    - uses: actions/checkout@v2
+      with:
+        ref: master
+    - uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: ./node_modules
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+    - name: install dependencies
+      run: | 
+        echo "registry=https://registry.npmjs.org/" > ./.npmrc
+        echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" >> ./.npmrc
+        yarn
+        npm i -g broccoli-cli
+    - name: build
+      run: |
+        broccoli build dist
+    - name: upgrade version
+      run: | 
+        git config --global user.name "sc.hal9000"
+        git config --global user.email "hal9000@silvercurve.co.uk"
+        yarn version --new-version ${{ github.event.release.tag_name }}
+        git push
+    - name: publish package
+      env:
+        NPM_AUTH_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+      run: |
+        yarn publish
+
