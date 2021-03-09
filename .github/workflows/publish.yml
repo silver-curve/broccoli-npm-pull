@@ -35,10 +35,6 @@ jobs:
         echo "registry=https://registry.npmjs.org/" > ./.npmrc
         echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" >> ./.npmrc
         yarn
-        npm i -g broccoli-cli
-    - name: build
-      run: |
-        broccoli build dist
     - name: upgrade version
       run: | 
         git config --global user.name "sc.hal9000"
