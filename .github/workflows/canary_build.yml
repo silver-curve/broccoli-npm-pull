@@ -37,11 +37,3 @@ jobs:
         echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" >> ./.npmrc
         export PATH=$PATH:node_modules/.bin
         yarn
-    - name: build
-      run: |
-        export PATH=$PATH:node_modules/.bin
-        broccoli build dist
-    - name: test
-      run: |
-        export PATH=$PATH:node_modules/.bin
-        buster-test
